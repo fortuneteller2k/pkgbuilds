@@ -1,0 +1,41 @@
+# Maintainer: fortuneteller2k
+pkgname=st-f2k
+pkgver=0.8.4
+pkgrel=1
+pkgdesc="A heavily-patched and customized build of st."
+arch=(x86_64 i686)
+url="https://github.com/fortuneteller2k/st.git"
+license=('MIT')
+groups=()
+depends=(ttf-fantasque-sans-mono harfbuzz harfbuzz-icu libxft)
+makedepends=(git)
+checkdepends=()
+optdepends=()
+provides=(st)
+conflicts=(st)
+replaces=()
+backup=()
+options=()
+source=("git+$url")
+noextract=()
+md5sums=('SKIP')
+validpgpkeys=()
+
+pkgver() {
+  cd "${_pkgname}"
+  printf "${pkgver}"
+}
+
+build() {
+  cd st
+  make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
+}
+
+package() {
+  cd st  
+  mkdir -p ${pkgdir}/opt/${pkgname}
+  cp -rf * ${pkgdir}/opt/${pkgname}
+  make PREFIX=/usr DESTDIR="${pkgdir}" install
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 README "${pkgdir}/usr/share/doc/${pkgname}/README"
+}
